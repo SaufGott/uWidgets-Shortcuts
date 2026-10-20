@@ -14,6 +14,8 @@ monochrome theme, with a contrast slider per shortcut.
 
 ---
 
+![The widget on the desktop](assets/screenshot.png)
+
 ## Build
 
 Requires the .NET 8 SDK.
