@@ -1,0 +1,191 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="clr-namespace:Shortcuts.ViewModels"
+             xmlns:locales="clr-namespace:Shortcuts.Locales"
+             x:Class="Shortcuts.Views.Settings.ShortcutsSettings"
+             x:DataType="viewModels:ShortcutsViewModel"
+             Margin="12">
+    <UserControl.Styles>
+        <Style Selector="Button.mini">
+            <Setter Property="Padding" Value="4,1" />
+            <Setter Property="MinWidth" Value="18" />
+            <Setter Property="MinHeight" Value="18" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBlock.counter">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Opacity" Value="0.6" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="MinWidth" Value="12" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Opacity" Value="0.6" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBox.entry">
+            <Setter Property="Padding" Value="4,2" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="MinHeight" Value="24" />
+        </Style>
+        <Style Selector="TextBox.number">
+            <Setter Property="Width" Value="56" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+        <!-- The 3x3 alignment picker: plain selectable cells, no radio bullet. -->
+        <Style Selector="RadioButton.dot">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="3" />
+            <Setter Property="MinWidth" Value="18" />
+            <Setter Property="MinHeight" Value="18" />
+            <Setter Property="Opacity" Value="0.45" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4" Padding="3">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="RadioButton.dot:checked">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="RadioButton.dot Ellipse">
+            <Setter Property="Fill" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <StackPanel Spacing="8">
+            <TextBox Classes="entry" Watermark="{x:Static locales:Locale.Title}"
+                     Text="{Binding Title}" LostFocus="UpdateTitle" />
+
+            <Grid ColumnDefinitions="Auto, *" Margin="0,0,0,4">
+                <TextBlock Grid.Column="0" Classes="label" Margin="0,0,8,0"
+                           Text="{x:Static locales:Locale.Monochrome}" />
+                <ComboBox Grid.Column="1" ItemsSource="{Binding MonochromeOptions}"
+                          SelectedItem="{Binding MonochromeMode}" SelectionChanged="MonochromeChanged" />
+            </Grid>
+
+            <!-- Two-way: the checkbox has to write back to the view model. -->
+            <CheckBox Content="{x:Static locales:Locale.Lock}" IsChecked="{Binding Locked, Mode=TwoWay}" />
+
+            <StackPanel Spacing="4">
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBlock Grid.Column="0" Classes="label" Text="{x:Static locales:Locale.IconSize}" />
+                    <TextBox Grid.Column="1" Classes="entry number" Text="{Binding IconSize}"
+                             Tag="IconSize" LostFocus="UpdateLayout" />
+                </Grid>
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBlock Grid.Column="0" Classes="label" Text="{x:Static locales:Locale.IconPadding}" />
+                    <TextBox Grid.Column="1" Classes="entry number" Text="{Binding IconPadding}"
+                             Tag="IconPadding" LostFocus="UpdateLayout" />
+                </Grid>
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBlock Grid.Column="0" Classes="label" Text="{x:Static locales:Locale.Gap}" />
+                    <TextBox Grid.Column="1" Classes="entry number" Text="{Binding Gap}"
+                             Tag="Gap" LostFocus="UpdateLayout" />
+                </Grid>
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBlock Grid.Column="0" Classes="label" Text="{x:Static locales:Locale.EdgeMargin}" />
+                    <TextBox Grid.Column="1" Classes="entry number" Text="{Binding EdgeMargin}"
+                             Tag="EdgeMargin" LostFocus="UpdateLayout" />
+                </Grid>
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBlock Grid.Column="0" Classes="label" Text="{x:Static locales:Locale.FontSize}" />
+                    <TextBox Grid.Column="1" Classes="entry number" Text="{Binding TitleFontSize}"
+                             Tag="TitleFontSize" LostFocus="UpdateLayout" />
+                </Grid>
+
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBlock Grid.Column="0" Classes="label" VerticalAlignment="Top" Margin="0,4,0,0"
+                               Text="{x:Static locales:Locale.Alignment}" />
+                    <UniformGrid Grid.Column="1" Rows="3" Columns="3">
+                        <RadioButton Classes="dot" IsChecked="{Binding AlignTopLeft, Mode=TwoWay}"><Ellipse Width="6" Height="6" /></RadioButton>
+                        <RadioButton Classes="dot" IsChecked="{Binding AlignTopCenter, Mode=TwoWay}"><Ellipse Width="6" Height="6" /></RadioButton>
+                        <RadioButton Classes="dot" IsChecked="{Binding AlignTopRight, Mode=TwoWay}"><Ellipse Width="6" Height="6" /></RadioButton>
+                        <RadioButton Classes="dot" IsChecked="{Binding AlignCenterLeft, Mode=TwoWay}"><Ellipse Width="6" Height="6" /></RadioButton>
+                        <RadioButton Classes="dot" IsChecked="{Binding AlignCenter, Mode=TwoWay}"><Ellipse Width="6" Height="6" /></RadioButton>
+                        <RadioButton Classes="dot" IsChecked="{Binding AlignCenterRight, Mode=TwoWay}"><Ellipse Width="6" Height="6" /></RadioButton>
+                        <RadioButton Classes="dot" IsChecked="{Binding AlignBottomLeft, Mode=TwoWay}"><Ellipse Width="6" Height="6" /></RadioButton>
+                        <RadioButton Classes="dot" IsChecked="{Binding AlignBottomCenter, Mode=TwoWay}"><Ellipse Width="6" Height="6" /></RadioButton>
+                        <RadioButton Classes="dot" IsChecked="{Binding AlignBottomRight, Mode=TwoWay}"><Ellipse Width="6" Height="6" /></RadioButton>
+                    </UniformGrid>
+                </Grid>
+            </StackPanel>
+
+            <Grid ColumnDefinitions="*, Auto">
+                <TextBox Grid.Column="0" Classes="entry" Watermark="{x:Static locales:Locale.NewCategory}"
+                         KeyDown="AddCategoryKeyDown" />
+                <Button Grid.Column="1" Classes="mini" Click="AddCategoryClick"
+                        ToolTip.Tip="{x:Static locales:Locale.Add}">+</Button>
+            </Grid>
+
+            <ItemsControl ItemsSource="{Binding Categories}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:CategoryViewModel">
+                        <Border BorderBrush="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                BorderThickness="0,0,0,1" Opacity="0.35" Padding="0,0,0,8">
+                            <StackPanel Spacing="4">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <TextBox Grid.Column="0" Classes="entry" Text="{Binding Name}"
+                                             LostFocus="UpdateCategoryName" />
+                                    <Button Grid.Column="1" Classes="mini" Click="DeleteCategory"
+                                            ToolTip.Tip="{x:Static locales:Locale.Delete}">×</Button>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto">
+                                    <TextBlock Grid.Column="0" Classes="label" Margin="0,0,4,0"
+                                               Text="{x:Static locales:Locale.Rows}" />
+                                    <Button Grid.Column="1" Classes="mini" Click="DecRows">-</Button>
+                                    <TextBlock Grid.Column="2" Classes="counter" Text="{Binding Rows}" />
+                                    <Button Grid.Column="3" Classes="mini" Click="IncRows">+</Button>
+                                    <TextBlock Grid.Column="4" Classes="label" Margin="8,0,4,0"
+                                               Text="{x:Static locales:Locale.Columns}" />
+                                    <Button Grid.Column="5" Classes="mini" Click="DecColumns">-</Button>
+                                    <TextBlock Grid.Column="6" Classes="counter" Text="{Binding Columns}" />
+                                    <Button Grid.Column="7" Classes="mini" Click="IncColumns">+</Button>
+                                </Grid>
+
+                                <ItemsControl ItemsSource="{Binding Entries}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="viewModels:EntryViewModel">
+                                            <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,4">
+                                                <StackPanel Grid.Column="0" Spacing="2">
+                                                    <TextBox Classes="entry" Text="{Binding Name}"
+                                                           LostFocus="UpdateEntryName" />
+                                                    <TextBox Classes="entry" Text="{Binding TargetPath}"
+                                                           LostFocus="UpdateEntryPath" />
+                                                    <Grid ColumnDefinitions="Auto, *">
+                                                        <TextBlock Grid.Column="0" Classes="label"
+                                                                   Margin="0,0,6,0" Text="{x:Static locales:Locale.Contrast}" />
+                                                        <Slider Grid.Column="1" Minimum="0.2" Maximum="2.0"
+                                                                Value="{Binding Contrast}"
+                                                                ValueChanged="UpdateContrast" />
+                                                    </Grid>
+                                                </StackPanel>
+                                                <Button Grid.Column="1" Classes="mini" Click="DeleteEntry"
+                                                        VerticalAlignment="Top" ToolTip.Tip="{x:Static locales:Locale.Remove}">×</Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,8 @@
+bin/
+obj/
+dist/
+_scratch/
+ref/
+.dotnet-sdk8/
+.vs/
+*.user

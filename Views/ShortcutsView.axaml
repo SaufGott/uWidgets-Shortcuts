@@ -1,0 +1,202 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="clr-namespace:Shortcuts.ViewModels"
+             xmlns:controls="clr-namespace:Shortcuts.Views.Controls"
+             xmlns:locales="clr-namespace:Shortcuts.Locales"
+             x:Class="Shortcuts.Views.ShortcutsView"
+             x:DataType="viewModels:ShortcutsViewModel">
+    <!-- No Margin here: the host applies Margin="12" to every widget UserControl, which is
+         the inset every other uWidget gets. -->
+    <UserControl.Styles>
+        <Style Selector="Border:not(:pointerover) ScrollViewer">
+            <Setter Property="VerticalScrollBarVisibility" Value="Hidden" />
+            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        </Style>
+        <Style Selector="Border:pointerover ScrollViewer">
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        </Style>
+
+        <Style Selector="Button.mini">
+            <Setter Property="Padding" Value="4,1" />
+            <Setter Property="MinWidth" Value="18" />
+            <Setter Property="MinHeight" Value="18" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="Button.mini:disabled">
+            <Setter Property="Opacity" Value="0.35" />
+        </Style>
+
+        <Style Selector="TextBlock.counter">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Opacity" Value="0.6" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="MinWidth" Value="12" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+
+        <!-- Sizes come from the model, so they are bound on the elements rather than set in
+             the styles. Type selectors still have to name the exact type: a `Border.x`
+             selector does not match a control derived from Border. -->
+        <Style Selector="controls|CategoryBorder">
+            <Setter Property="Background" Value="#33FFFFFF" />
+            <Setter Property="CornerRadius" Value="10" />
+        </Style>
+
+        <Style Selector="controls|CategoryHeaderBorder">
+            <Setter Property="Background" Value="#33FFFFFF" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Padding" Value="3,2" />
+        </Style>
+
+        <Style Selector="TextBlock.pill">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
+        <Style Selector="controls|SlotBorder">
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="controls|SlotBorder.dragover">
+            <Setter Property="Background" Value="#4DFFFFFF" />
+        </Style>
+
+        <Style Selector="controls|TileBorder">
+            <Setter Property="Background" Value="#33FFFFFF" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15" Delay="0:0:0.05" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="controls|TileBorder:pointerover">
+            <Setter Property="Background" Value="#FFFFFF" />
+        </Style>
+
+        <Style Selector="Path.box">
+            <Setter Property="Stretch" Value="Fill" />
+            <Setter Property="Fill" Value="#33FFFFFF" />
+        </Style>
+
+        <Style Selector="Path.frame">
+            <Setter Property="Stretch" Value="Fill" />
+            <Setter Property="Stroke" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="StrokeDashArray" Value="2,2" />
+            <Setter Property="Opacity" Value="0.4" />
+        </Style>
+
+        <Style Selector="Path.plus">
+            <Setter Property="Width" Value="13" />
+            <Setter Property="Height" Value="13" />
+            <Setter Property="Stretch" Value="None" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Stroke" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+            <Setter Property="StrokeThickness" Value="1.5" />
+            <Setter Property="StrokeLineCap" Value="Round" />
+        </Style>
+
+        <Style Selector="Path.glyph">
+            <Setter Property="Stroke" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+            <Setter Property="StrokeThickness" Value="1.4" />
+        </Style>
+    </UserControl.Styles>
+
+    <Border Classes="content" Padding="{Binding EdgePadding}">
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding Categories}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate x:CompileBindings="False">
+                        <controls:CategoryPanel Alignment="{Binding Alignment}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:CategoryViewModel">
+                        <controls:CategoryBorder Margin="{Binding BoxMargin}" Padding="{Binding BoxPadding}">
+                            <StackPanel Spacing="{Binding BoxSpacing}">
+                                <!-- Same inset as a slot on the top and sides, so the pill is
+                                     exactly as wide as the columns. No bottom margin, otherwise
+                                     the gap below it is counted twice. -->
+                                <controls:CategoryHeaderBorder Margin="{Binding TitleMargin}">
+                                    <TextBlock Classes="pill" Text="{Binding Name}"
+                                               FontSize="{Binding TitleFontSize}" />
+                                </controls:CategoryHeaderBorder>
+
+                                <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto"
+                                      IsVisible="{Binding ShowControls}">
+                                    <TextBlock Grid.Column="0" Classes="counter" Margin="0,0,2,0"
+                                               Text="{x:Static locales:Locale.Rows}" />
+                                    <Button Grid.Column="1" Classes="mini" Click="DecRows">-</Button>
+                                    <TextBlock Grid.Column="2" Classes="counter" Text="{Binding Rows}" />
+                                    <Button Grid.Column="3" Classes="mini" Click="IncRows">+</Button>
+                                    <TextBlock Grid.Column="4" Classes="counter" Margin="6,0,2,0"
+                                               Text="{x:Static locales:Locale.Columns}" />
+                                    <Button Grid.Column="5" Classes="mini" Click="DecColumns">-</Button>
+                                    <TextBlock Grid.Column="6" Classes="counter" Text="{Binding Columns}" />
+                                    <Button Grid.Column="7" Classes="mini" Click="IncColumns">+</Button>
+                                </Grid>
+
+                                <ItemsControl ItemsSource="{Binding Slots}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate x:CompileBindings="False">
+                                            <UniformGrid Rows="{Binding Rows}" Columns="{Binding Columns}" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="viewModels:SlotViewModel">
+                                            <controls:SlotBorder Width="{Binding BoxSize}" Height="{Binding BoxSize}"
+                                                                 Margin="{Binding BoxMargin}" Padding="0"
+                                                                 HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Panel>
+                                                    <Path Classes="box" IsVisible="{Binding ShowBox}"
+                                                          Width="{Binding BoxSize}" Height="{Binding BoxSize}"
+                                                          Data="M5.5,0.5 L44.5,0.5 A4.5,4.5 0 0 1 49.5,5.5 L49.5,44.5 A4.5,4.5 0 0 1 44.5,49.5 L5.5,49.5 A4.5,4.5 0 0 1 0.5,44.5 L0.5,5.5 A4.5,4.5 0 0 1 5.5,0.5 Z" />
+
+                                                    <Path Classes="frame" IsVisible="{Binding ShowBox}"
+                                                          Width="{Binding BoxSize}" Height="{Binding BoxSize}"
+                                                          Data="M5.5,0.5 L44.5,0.5 A4.5,4.5 0 0 1 49.5,5.5 L49.5,44.5 A4.5,4.5 0 0 1 44.5,49.5 L5.5,49.5 A4.5,4.5 0 0 1 0.5,44.5 L0.5,5.5 A4.5,4.5 0 0 1 5.5,0.5 Z" />
+
+                                                    <Path Classes="plus" IsVisible="{Binding ShowPlus}"
+                                                          Data="M6.5,1 L6.5,12 M1,6.5 L12,6.5" />
+
+                                                    <controls:TileBorder IsVisible="{Binding HasEntry}"
+                                                                       Padding="{Binding BoxPadding}"
+                                                                       ToolTip.Tip="{Binding Entry.Name}">
+                                                        <!-- Not hit-test visible: the tile has to be the pointer
+                                                             target, otherwise hover and click land on the content. -->
+                                                        <Panel Width="{Binding IconSize}" Height="{Binding IconSize}"
+                                                             IsHitTestVisible="False"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Image Source="{Binding Entry.Icon}" Width="{Binding IconSize}"
+                                                                   Height="{Binding IconSize}" Stretch="Uniform"
+                                                                   RenderOptions.BitmapInterpolationMode="HighQuality"
+                                                                   IsHitTestVisible="False" IsVisible="{Binding Entry.HasBitmap}" />
+                                                            <Path Data="{Binding Entry.Glyph}" Width="{Binding IconSize}"
+                                                                  Height="{Binding IconSize}" Stretch="Uniform" Classes="glyph"
+                                                                  IsHitTestVisible="False" IsVisible="{Binding Entry.HasGlyph}" />
+                                                        </Panel>
+                                                    </controls:TileBorder>
+                                                </Panel>
+                                            </controls:SlotBorder>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </controls:CategoryBorder>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Border>
+</UserControl>
