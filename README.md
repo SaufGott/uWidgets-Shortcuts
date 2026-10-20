@@ -20,8 +20,8 @@ monochrome theme, with a contrast slider per shortcut.
 
 ## Install
 
-1. Copy `Shortcuts.dll` into uWidgets' `Widgets` folder (the folder next to
-   `uWidgets.exe`; open it from the tray menu if you are unsure).
+1. Download latest version from releases and copy `Shortcuts.dll` into uWidgets' `Widgets` folder (the folder next to
+   `uWidgets.exe`; for me the installation is under user/documents/uwidgets.
 2. Restart uWidgets, add the widget from the widget list.
 
 ---
