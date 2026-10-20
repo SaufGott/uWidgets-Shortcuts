@@ -16,21 +16,7 @@ monochrome theme, with a contrast slider per shortcut.
 
 ![The widget on the desktop](assets/screenshot.png)
 
-## Build
-
-Requires the .NET 8 SDK.
-
-```powershell
-dotnet build -c Release
-```
-
-The output is `dist\Widgets\Shortcuts.dll` — that single file is the whole plugin.
-`uWidgets.Core` is referenced with `Private=false` / `ExcludeAssets=runtime`, so no extra
-DLLs are copied: the host already provides that assembly, which keeps type identity intact.
-
-The build reports `AVLN3001 … no public constructor was found` for the two views. That is
-expected: the host activates them through DI, so they take constructor arguments and are
-never loaded through the XAML runtime loader.
+---
 
 ## Install
 
@@ -59,6 +45,24 @@ never loaded through the XAML runtime loader.
    font size, alignment) are in the same window and apply immediately.
 
 Everything is stored in uWidgets' `layout.json`, so the layout is restored after a restart.
+
+---
+
+## Build
+
+Requires the .NET 8 SDK.
+
+```powershell
+dotnet build -c Release
+```
+
+The output is `dist\Widgets\Shortcuts.dll` — that single file is the whole plugin.
+`uWidgets.Core` is referenced with `Private=false` / `ExcludeAssets=runtime`, so no extra
+DLLs are copied: the host already provides that assembly, which keeps type identity intact.
+
+The build reports `AVLN3001 … no public constructor was found` for the two views. That is
+expected: the host activates them through DI, so they take constructor arguments and are
+never loaded through the XAML runtime loader.
 
 ---
 
