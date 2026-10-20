@@ -22,7 +22,7 @@ monochrome theme, with a contrast slider per shortcut.
 
 1. Download latest version from releases and copy `Shortcuts.dll` into uWidgets' `Widgets` folder (the folder next to
    `uWidgets.exe`; for me the installation is under user/documents/uwidgets.
-2. Restart uWidgets, add the widget from the widget list.
+2. Restart uWidgets, add the widget by right-clicking a uwidget window on your desktop --> settings-> uwidgets settings window opens -->left side find "Shortcuts" and click on the empty box in the middle --> shortcuts widget spawns on your desktop is dragable and resizable
 
 ---
 
